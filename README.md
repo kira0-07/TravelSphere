@@ -136,4 +136,4 @@ TravelSphere/
 
 ---
 
-*Designed and Built for Hack 2k26.*
+*Designed and Built for The C. Tech. (CATALYST TECHONOLOGIES PVT. LTD.).*
