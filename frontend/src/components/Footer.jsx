@@ -3,10 +3,10 @@ import { RiFlightTakeoffLine } from 'react-icons/ri';
 import { FiInstagram, FiFacebook, FiTwitter, FiYoutube, FiMail } from 'react-icons/fi';
 
 const quickLinks = [
-  { to: '/destinations', label: 'Destinations' },
-  { to: '/packages', label: 'Tour Packages' },
-  { to: '/hotels', label: 'Hotels' },
-  { to: '/about', label: 'About Us' },
+  { to: '/#globe-destinations', label: 'Destinations' },
+  { to: '/#packages', label: 'Tour Packages' },
+  { to: '/#hotels', label: 'Hotels' },
+  { to: '/#why-us', label: 'About Us' },
 ];
 
 const supportLinks = [
