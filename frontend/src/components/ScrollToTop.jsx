@@ -2,18 +2,18 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 export default function ScrollToTop() {
-  const { pathname } = useLocation();
-
+  const { pathname, hash } = useLocation();
+  
   useEffect(() => {
-    // Instantly scroll to the top of the page on route change.
-    // By using "auto" we bypass the smooth scrolling defined in index.css
-    // which can feel janky when navigating between completely different pages.
+    // If there's a hash, don't scroll to top. Let the page handle hash scrolling.
+    if (hash) return;
+
     window.scrollTo({
       top: 0,
       left: 0,
       behavior: 'auto'
     });
-  }, [pathname]);
+  }, [pathname, hash]);
 
   return null;
 }

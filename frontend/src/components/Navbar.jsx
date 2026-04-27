@@ -8,9 +8,9 @@ import { useAuth } from '../hooks/useAuth';
 import { useTheme } from '../hooks/useTheme';
 
 const navLinks = [
-  { to: '/', hash: '#globe-destinations', label: 'Destinations' },
-  { to: '/', hash: '#packages', label: 'Packages' },
-  { to: '/', hash: '#hotels', label: 'Hotels' },
+  { to: '/#globe-destinations', hash: '#globe-destinations', label: 'Destinations' },
+  { to: '/#packages', hash: '#packages', label: 'Packages' },
+  { to: '/#hotels', hash: '#hotels', label: 'Hotels' },
 ];
 
 export default function Navbar() {
@@ -67,13 +67,9 @@ export default function Navbar() {
                         const element = document.querySelector(hash);
                         if (element) {
                           element.scrollIntoView({ behavior: 'smooth' });
+                          // Update URL hash without reload
+                          window.history.pushState(null, '', hash);
                         }
-                      } else {
-                        // Let it navigate to root, then scroll (can be tricky without a timeout, but works for basic SPA)
-                        setTimeout(() => {
-                          const element = document.querySelector(hash);
-                          if (element) element.scrollIntoView({ behavior: 'smooth' });
-                        }, 100);
                       }
                     }}
                     className={`px-4 py-2 rounded-sm font-body font-medium text-sm transition-all duration-200 text-on-surface/80 hover:text-on-surface hover:bg-surface-container cursor-pointer`}
@@ -197,12 +193,10 @@ export default function Navbar() {
                       if (window.location.pathname === '/') {
                         e.preventDefault();
                         const element = document.querySelector(hash);
-                        if (element) element.scrollIntoView({ behavior: 'smooth' });
-                      } else {
-                        setTimeout(() => {
-                          const element = document.querySelector(hash);
-                          if (element) element.scrollIntoView({ behavior: 'smooth' });
-                        }, 100);
+                        if (element) {
+                          element.scrollIntoView({ behavior: 'smooth' });
+                          window.history.pushState(null, '', hash);
+                        }
                       }
                     }}
                     className="block px-4 py-3 rounded-sm font-body font-medium text-sm transition-colors text-on-surface/80 hover:text-on-surface hover:bg-surface-container"
