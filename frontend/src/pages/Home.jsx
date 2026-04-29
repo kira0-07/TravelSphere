@@ -16,7 +16,7 @@ import PackagesFlip from '../components/PackagesFlip';
 import HotelsParallax from '../components/HotelsParallax';
 
 // Keeping static testimonials and features since they might not be in DB yet
-import { testimonials, features } from '../data/mockData';
+import { testimonials, features, destinations as mockDestinations, packages as mockPackages } from '../data/mockData';
 import { destinationsAPI, packagesAPI } from '../services/api';
 
 export default function Home() {
@@ -35,10 +35,16 @@ export default function Home() {
           destinationsAPI.getAll(),
           packagesAPI.getFeatured()
         ]);
-        setFeaturedDestinations(destRes.data.filter(d => d.featured).slice(0, 6));
-        setFeaturedPackages(pkgRes.data);
+        
+        const dests = (destRes.data && destRes.data.length > 0) ? destRes.data : mockDestinations;
+        const pkgs = (pkgRes.data && pkgRes.data.length > 0) ? pkgRes.data : mockPackages.filter(p => p.featured);
+        
+        setFeaturedDestinations(dests.filter(d => d.featured).slice(0, 6));
+        setFeaturedPackages(pkgs);
       } catch (err) {
-        console.error('Failed to fetch home data', err);
+        console.error('Failed to fetch home data, using mock fallback', err);
+        setFeaturedDestinations(mockDestinations.filter(d => d.featured).slice(0, 6));
+        setFeaturedPackages(mockPackages.filter(p => p.featured));
       } finally {
         setLoading(false);
       }

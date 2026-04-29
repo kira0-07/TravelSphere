@@ -84,10 +84,8 @@
   border-radius: 24px !important;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4) !important;
   font-family: inherit !important;
-  padding: 16px !important;
-  display: flex !important;
-  flex-direction: row !important;
-  overflow: hidden;
+  padding: 8px !important;
+  display: block !important;
 }
 
 /* Fix for the popover arrow (triangle) */
@@ -218,10 +216,10 @@
 }
 
 .react-datepicker__navigation {
-  top: 28px !important;
+  top: 12px !important;
   width: 32px !important;
   height: 32px !important;
-  background-color: rgb(var(--c-surface-container-high) / 0.5) !important;
+  background-color: transparent !important;
   border-radius: 50% !important;
   transition: all 0.2s ease !important;
 }

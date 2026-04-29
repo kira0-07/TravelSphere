@@ -4,10 +4,14 @@ import { Link } from 'react-router-dom';
 import { FiPlus, FiEdit2, FiTrash2 } from 'react-icons/fi';
 import { packagesAPI } from '../services/api';
 import toast from 'react-hot-toast';
+import Modal from '../components/Modal';
+import PackageForm from '../components/admin/PackageForm';
 
 export default function ManagePackages() {
   const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState(null);
 
   useEffect(() => {
     fetchPackages();
@@ -23,6 +27,16 @@ export default function ManagePackages() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleAdd = () => {
+    setSelectedPackage(null);
+    setIsModalOpen(true);
+  };
+
+  const handleEdit = (pkg) => {
+    setSelectedPackage(pkg);
+    setIsModalOpen(true);
   };
 
   const handleDelete = async (id) => {
@@ -43,10 +57,28 @@ export default function ManagePackages() {
           <h1 className="font-display font-bold text-3xl text-on-surface mb-2">Manage Packages</h1>
           <p className="text-on-surface-variant">Add, edit, or remove travel packages.</p>
         </div>
-        <button className="btn-primary flex items-center gap-2 w-max">
+        <button 
+          onClick={handleAdd}
+          className="btn-primary flex items-center gap-2 w-max"
+        >
           <FiPlus /> Add Package
         </button>
       </div>
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={selectedPackage ? 'Edit Package' : 'Add New Package'}
+      >
+        <PackageForm
+          pkg={selectedPackage}
+          onSuccess={() => {
+            setIsModalOpen(false);
+            fetchPackages();
+          }}
+          onCancel={() => setIsModalOpen(false)}
+        />
+      </Modal>
 
       <div className="bg-surface-container-lowest rounded-xl border border-outline-variant/20 shadow-ambient overflow-hidden">
         <div className="overflow-x-auto">
@@ -86,7 +118,11 @@ export default function ManagePackages() {
                     <td className="px-6 py-4 font-bold text-primary">${pkg.price}</td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-3">
-                        <button className="p-2 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded transition-colors" title="Edit">
+                        <button 
+                          onClick={() => handleEdit(pkg)}
+                          className="p-2 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded transition-colors" 
+                          title="Edit"
+                        >
                           <FiEdit2 size={16} />
                         </button>
                         <button onClick={() => handleDelete(pkg._id)} className="p-2 text-on-surface-variant hover:text-error hover:bg-error/10 rounded transition-colors" title="Delete">

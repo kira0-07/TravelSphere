@@ -4,10 +4,14 @@ import { Link } from 'react-router-dom';
 import { FiPlus, FiEdit2, FiTrash2, FiStar } from 'react-icons/fi';
 import { hotelsAPI } from '../services/api';
 import toast from 'react-hot-toast';
+import Modal from '../components/Modal';
+import HotelForm from '../components/admin/HotelForm';
 
 export default function ManageHotels() {
   const [hotels, setHotels] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedHotel, setSelectedHotel] = useState(null);
 
   useEffect(() => {
     fetchHotels();
@@ -23,6 +27,16 @@ export default function ManageHotels() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleAdd = () => {
+    setSelectedHotel(null);
+    setIsModalOpen(true);
+  };
+
+  const handleEdit = (hotel) => {
+    setSelectedHotel(hotel);
+    setIsModalOpen(true);
   };
 
   const handleDelete = async (id) => {
@@ -43,10 +57,28 @@ export default function ManageHotels() {
           <h1 className="font-display font-bold text-3xl text-on-surface mb-2">Manage Hotels</h1>
           <p className="text-on-surface-variant">Add, edit, or remove partner hotels.</p>
         </div>
-        <button className="btn-primary flex items-center gap-2 w-max">
+        <button 
+          onClick={handleAdd}
+          className="btn-primary flex items-center gap-2 w-max"
+        >
           <FiPlus /> Add Hotel
         </button>
       </div>
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={selectedHotel ? 'Edit Hotel' : 'Add New Hotel'}
+      >
+        <HotelForm
+          hotel={selectedHotel}
+          onSuccess={() => {
+            setIsModalOpen(false);
+            fetchHotels();
+          }}
+          onCancel={() => setIsModalOpen(false)}
+        />
+      </Modal>
 
       <div className="bg-surface-container-lowest rounded-xl border border-outline-variant/20 shadow-ambient overflow-hidden">
         <div className="overflow-x-auto">
@@ -93,7 +125,11 @@ export default function ManageHotels() {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-3">
-                        <button className="p-2 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded transition-colors" title="Edit">
+                        <button 
+                          onClick={() => handleEdit(hotel)}
+                          className="p-2 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded transition-colors" 
+                          title="Edit"
+                        >
                           <FiEdit2 size={16} />
                         </button>
                         <button onClick={() => handleDelete(hotel._id)} className="p-2 text-on-surface-variant hover:text-error hover:bg-error/10 rounded transition-colors" title="Delete">

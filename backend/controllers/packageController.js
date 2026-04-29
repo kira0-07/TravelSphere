@@ -68,7 +68,7 @@ const getFeaturedPackages = async (req, res) => {
 // @access  Public
 const getPackageById = async (req, res) => {
   try {
-    const pkg = await Package.findOne({ id: req.params.id });
+    const pkg = await Package.findById(req.params.id);
 
     if (!pkg) {
       return res.status(404).json({ message: 'Package not found', success: false });
@@ -100,7 +100,7 @@ const createPackage = async (req, res) => {
 // @access  Private/Admin
 const updatePackage = async (req, res) => {
   try {
-    let pkg = await Package.findOne({ id: req.params.id });
+    let pkg = await Package.findById(req.params.id);
 
     if (!pkg) {
       return res.status(404).json({ message: 'Package not found', success: false });
@@ -111,8 +111,8 @@ const updatePackage = async (req, res) => {
       return res.status(403).json({ message: 'Not authorized to update this package', success: false });
     }
 
-    pkg = await Package.findOneAndUpdate(
-      { id: req.params.id },
+    pkg = await Package.findByIdAndUpdate(
+      req.params.id,
       req.body,
       { new: true, runValidators: true }
     );
@@ -129,7 +129,7 @@ const updatePackage = async (req, res) => {
 // @access  Private/Admin
 const deletePackage = async (req, res) => {
   try {
-    const pkg = await Package.findOne({ id: req.params.id });
+    const pkg = await Package.findById(req.params.id);
 
     if (!pkg) {
       return res.status(404).json({ message: 'Package not found', success: false });
@@ -140,7 +140,7 @@ const deletePackage = async (req, res) => {
       return res.status(403).json({ message: 'Not authorized to delete this package', success: false });
     }
 
-    await Package.findOneAndDelete({ id: req.params.id });
+    await Package.findByIdAndDelete(req.params.id);
 
     res.json({ message: 'Package removed', success: true });
   } catch (error) {

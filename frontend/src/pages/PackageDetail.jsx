@@ -10,6 +10,7 @@ import { bookingsAPI, packagesAPI } from '../services/api';
 import toast from 'react-hot-toast';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { packages as mockPackages } from '../data/mockData';
 
 export default function PackageDetail() {
   const { id } = useParams();
@@ -23,24 +24,27 @@ export default function PackageDetail() {
     const stored = localStorage.getItem('travelers');
     return stored ? parseInt(stored) : 1;
   });
-  const [dateRange, setDateRange] = useState(() => {
-    const storedStart = localStorage.getItem('search_startDate');
-    const storedEnd = localStorage.getItem('search_endDate');
-    return [
-      storedStart ? new Date(storedStart) : null,
-      storedEnd ? new Date(storedEnd) : null
-    ];
+  const [startDate, setStartDate] = useState(() => {
+    const stored = localStorage.getItem('search_startDate');
+    return stored ? new Date(stored) : null;
   });
-  const [startDate, endDate] = dateRange;
+  
+  const endDate = (pkg && startDate) 
+    ? new Date(new Date(startDate).getTime() + (pkg.duration * 24 * 60 * 60 * 1000))
+    : null;
 
   useEffect(() => {
     const fetchPackage = async () => {
       try {
         const res = await packagesAPI.getById(id);
-        setPkg(res.data);
+        if (res.data) {
+          setPkg(res.data);
+        } else {
+          setPkg(mockPackages.find(p => p.id === id) || null);
+        }
       } catch (err) {
-        console.error('Failed to fetch package', err);
-        setError(true);
+        console.error('Failed to fetch package, using mock fallback', err);
+        setPkg(mockPackages.find(p => p.id === id) || null);
       } finally {
         setLoading(false);
       }
@@ -58,13 +62,6 @@ export default function PackageDetail() {
   }, [pkg]);
 
   let calculatedDuration = pkg?.duration || 0;
-  if (startDate && endDate) {
-    const diffTime = Math.abs(endDate - startDate);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    if (diffDays > 0) {
-      calculatedDuration = diffDays;
-    }
-  }
 
   let calculatedPrice = pkg?.price || 0;
   if (pkg && startDate && endDate && calculatedDuration > 0) {
@@ -239,23 +236,24 @@ export default function PackageDetail() {
                 <div className="mb-6">
                   <label className="block text-sm font-semibold text-on-surface mb-2">Select Travel Dates</label>
                   <DatePicker
-                    selectsRange={true}
-                    startDate={startDate}
-                    endDate={endDate}
-                    onChange={(update) => {
-                      setDateRange(update);
-                      const [start, end] = update;
-                      if (start) localStorage.setItem('search_startDate', start.toISOString());
+                    selected={startDate}
+                    onChange={(date) => {
+                      setStartDate(date);
+                      if (date) localStorage.setItem('search_startDate', date.toISOString());
                       else localStorage.removeItem('search_startDate');
-                      if (end) localStorage.setItem('search_endDate', end.toISOString());
-                      else localStorage.removeItem('search_endDate');
                     }}
                     minDate={new Date()}
                     monthsShown={1}
-                    placeholderText="Check-in - Check-out"
-                    className="w-full bg-surface-container rounded-md p-3 text-sm text-on-surface outline-none focus:ring-2 focus:ring-primary/50 border border-outline-variant/30"
+                    placeholderText="Select Departure Date"
+                    className="w-full bg-surface-container rounded-md p-3 text-sm text-on-surface outline-none focus:ring-2 focus:ring-primary/50 border border-outline-variant/30 transition-all hover:bg-surface-container-high"
                     wrapperClassName="w-full"
                   />
+                  {startDate && endDate && (
+                    <div className="mt-3 p-3 bg-primary/5 rounded-lg border border-primary/10 flex items-center justify-between animate-in fade-in slide-in-from-top-2">
+                      <div className="text-xs text-on-surface-variant font-medium">Return Date:</div>
+                      <div className="text-sm font-bold text-primary">{endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Travelers Selector */}

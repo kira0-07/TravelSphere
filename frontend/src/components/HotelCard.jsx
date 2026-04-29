@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FiWifi, FiDroplet } from 'react-icons/fi';
+import { FiWifi, FiDroplet, FiStar } from 'react-icons/fi';
 import { MdOutlineSpa, MdOutlineRestaurant, MdFitnessCenter } from 'react-icons/md';
 
 const AMENITY_ICONS = {
@@ -41,7 +41,7 @@ export default function HotelCard({ hotel, index = 0 }) {
           {/* Stars */}
           <div className="flex items-center gap-0.5 mb-2">
             {[...Array(stars)].map((_, i) => (
-              <span key={i} className="text-secondary-container text-sm">★</span>
+              <FiStar key={i} size={14} className="text-amber-500 fill-amber-500" />
             ))}
           </div>
 
@@ -52,8 +52,10 @@ export default function HotelCard({ hotel, index = 0 }) {
 
           {/* Rating */}
           <div className="flex items-center gap-2 mb-4">
-            <span className="px-2 py-0.5 bg-primary text-white text-xs font-bold rounded-xs">{rating}</span>
-            <span className="text-xs text-on-surface-variant">{reviewCount?.toLocaleString()} reviews</span>
+            <div className="flex items-center gap-0.5 px-2 py-0.5 bg-primary text-white text-xs font-bold rounded-xs">
+              {rating}
+            </div>
+            <span className="text-xs text-on-surface-variant font-medium">{reviewCount?.toLocaleString()} verified reviews</span>
           </div>
 
           {/* Amenity chips */}

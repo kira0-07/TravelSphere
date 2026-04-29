@@ -45,7 +45,7 @@ const getHotels = async (req, res) => {
 // @access  Public
 const getHotelById = async (req, res) => {
   try {
-    const hotel = await Hotel.findOne({ id: req.params.id });
+    const hotel = await Hotel.findById(req.params.id);
 
     if (!hotel) {
       return res.status(404).json({ message: 'Hotel not found', success: false });
@@ -76,8 +76,8 @@ const createHotel = async (req, res) => {
 // @access  Private/Admin
 const updateHotel = async (req, res) => {
   try {
-    const hotel = await Hotel.findOneAndUpdate(
-      { id: req.params.id },
+    const hotel = await Hotel.findByIdAndUpdate(
+      req.params.id,
       req.body,
       { new: true, runValidators: true }
     );
@@ -98,7 +98,7 @@ const updateHotel = async (req, res) => {
 // @access  Private/Admin
 const deleteHotel = async (req, res) => {
   try {
-    const hotel = await Hotel.findOneAndDelete({ id: req.params.id });
+    const hotel = await Hotel.findByIdAndDelete(req.params.id);
 
     if (!hotel) {
       return res.status(404).json({ message: 'Hotel not found', success: false });

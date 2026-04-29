@@ -12,6 +12,7 @@ import DestinationDetail from './pages/DestinationDetail';
 import PackageDetail from './pages/PackageDetail';
 import HotelDetail from './pages/HotelDetail';
 import MyTrips from './pages/MyTrips';
+import Packages from './pages/Packages';
 
 // Guards
 import ProtectedRoute from './components/ProtectedRoute';
@@ -36,6 +37,7 @@ function AnimatedRoutes() {
         <Route path="/destinations/:id" element={<DestinationDetail />} />
         <Route path="/packages/:id" element={<PackageDetail />} />
         <Route path="/hotels/:id" element={<HotelDetail />} />
+        <Route path="/packages" element={<Packages />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 

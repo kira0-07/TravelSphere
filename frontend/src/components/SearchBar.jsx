@@ -5,6 +5,7 @@ import { FiSearch, FiMapPin, FiCalendar, FiUsers, FiCornerDownLeft } from 'react
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { destinationsAPI } from '../services/api';
+import { destinations as mockDestinations } from '../data/mockData';
 
 export default function SearchBar({ compact = false }) {
   const [destinations, setDestinations] = useState([]);
@@ -13,9 +14,14 @@ export default function SearchBar({ compact = false }) {
     const fetchDestinations = async () => {
       try {
         const res = await destinationsAPI.getAll();
-        setDestinations(res.data);
+        if (res.data && res.data.length > 0) {
+          setDestinations(res.data);
+        } else {
+          setDestinations(mockDestinations);
+        }
       } catch (err) {
-        console.error('Failed to fetch destinations', err);
+        console.error('Failed to fetch destinations, using mock fallback', err);
+        setDestinations(mockDestinations);
       }
     };
     fetchDestinations();
@@ -26,10 +32,6 @@ export default function SearchBar({ compact = false }) {
   const [highlightIndex, setHighlightIndex] = useState(-1);
   const [startDate, setStartDate] = useState(() => {
     const stored = localStorage.getItem('search_startDate');
-    return stored ? new Date(stored) : null;
-  });
-  const [endDate, setEndDate] = useState(() => {
-    const stored = localStorage.getItem('search_endDate');
     return stored ? new Date(stored) : null;
   });
   const [travelers, setTravelers] = useState(() => {
@@ -94,21 +96,14 @@ export default function SearchBar({ compact = false }) {
     const params = new URLSearchParams();
     if (destination) params.set('q', destination);
     if (startDate) params.set('startDate', startDate.toISOString());
-    if (endDate) params.set('endDate', endDate.toISOString());
     if (travelers) params.set('travelers', travelers);
     navigate(`/packages?${params.toString()}`);
   };
 
-  const onChangeDate = (dates) => {
-    const [start, end] = dates;
-    setStartDate(start);
-    setEndDate(end);
-    
-    if (start) localStorage.setItem('search_startDate', start.toISOString());
+  const onChangeDate = (date) => {
+    setStartDate(date);
+    if (date) localStorage.setItem('search_startDate', date.toISOString());
     else localStorage.removeItem('search_startDate');
-    
-    if (end) localStorage.setItem('search_endDate', end.toISOString());
-    else localStorage.removeItem('search_endDate');
   };
 
   // When user changes text after selecting, clear the selected dest
@@ -227,12 +222,9 @@ export default function SearchBar({ compact = false }) {
           <DatePicker
             selected={startDate}
             onChange={onChangeDate}
-            startDate={startDate}
-            endDate={endDate}
-            selectsRange
             minDate={new Date()}
-            monthsShown={2}
-            placeholderText="Check-in - Check-out"
+            monthsShown={1}
+            placeholderText="Departure Date"
             className="w-full pl-11 pr-4 py-4 bg-transparent text-on-surface placeholder-on-surface/50 text-sm font-body outline-none focus:bg-surface-container-low transition-colors"
             wrapperClassName="w-full"
           />

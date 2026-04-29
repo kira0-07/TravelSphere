@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { FiStar } from 'react-icons/fi';
 
 export default function DestinationCard({ destination, index = 0 }) {
   const { id, name, country, region, image, tags, rating } = destination;
@@ -48,9 +49,9 @@ export default function DestinationCard({ destination, index = 0 }) {
             <div className="flex items-center justify-between mt-1">
               <p className="text-white/80 text-sm font-body">{country}</p>
               {rating && (
-                <div className="flex items-center gap-1 text-secondary-container">
-                  <span className="text-xs">★</span>
-                  <span className="text-sm font-semibold text-white">{rating}</span>
+                <div className="flex items-center gap-1">
+                  <FiStar size={14} className="text-amber-400 fill-amber-400" />
+                  <span className="text-sm font-bold text-white">{rating}</span>
                 </div>
               )}
             </div>

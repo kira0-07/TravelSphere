@@ -45,7 +45,7 @@ const getDestinations = async (req, res) => {
 // @access  Public
 const getDestinationById = async (req, res) => {
   try {
-    const destination = await Destination.findOne({ id: req.params.id });
+    const destination = await Destination.findById(req.params.id);
 
     if (!destination) {
       return res.status(404).json({ message: 'Destination not found', success: false });
@@ -76,8 +76,8 @@ const createDestination = async (req, res) => {
 // @access  Private/Admin
 const updateDestination = async (req, res) => {
   try {
-    const destination = await Destination.findOneAndUpdate(
-      { id: req.params.id },
+    const destination = await Destination.findByIdAndUpdate(
+      req.params.id,
       req.body,
       { new: true, runValidators: true }
     );
@@ -98,7 +98,7 @@ const updateDestination = async (req, res) => {
 // @access  Private/Admin
 const deleteDestination = async (req, res) => {
   try {
-    const destination = await Destination.findOneAndDelete({ id: req.params.id });
+    const destination = await Destination.findByIdAndDelete(req.params.id);
 
     if (!destination) {
       return res.status(404).json({ message: 'Destination not found', success: false });

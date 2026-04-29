@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FiClock, FiUsers } from 'react-icons/fi';
+import { FiClock, FiUsers, FiStar } from 'react-icons/fi';
 
 const BADGE_STYLES = {
   'Best Seller': 'bg-secondary-container text-[#4a2e00]',
@@ -74,11 +74,18 @@ export default function PackageCard({ pkg, index = 0 }) {
           </div>
 
           {/* Rating */}
-          <div className="flex items-center gap-1.5 mb-4">
-            {[...Array(5)].map((_, i) => (
-              <span key={i} className={`text-sm ${i < Math.floor(rating) ? 'text-secondary-container' : 'text-surface-container-highest'}`}>★</span>
-            ))}
-            <span className="text-xs text-on-surface-variant ml-1">({reviewCount?.toLocaleString()})</span>
+          <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-0.5">
+              {[...Array(5)].map((_, i) => (
+                <FiStar 
+                  key={i} 
+                  size={14} 
+                  className={i < Math.floor(rating) ? 'text-amber-500 fill-amber-500' : 'text-surface-container-highest'} 
+                />
+              ))}
+            </div>
+            <span className="text-xs font-bold text-on-surface">{rating}</span>
+            <span className="text-xs text-on-surface-variant">({reviewCount?.toLocaleString()} reviews)</span>
           </div>
 
           {/* Price + CTA */}

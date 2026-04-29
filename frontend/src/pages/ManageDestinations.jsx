@@ -4,10 +4,14 @@ import { Link } from 'react-router-dom';
 import { FiPlus, FiEdit2, FiTrash2 } from 'react-icons/fi';
 import { destinationsAPI } from '../services/api';
 import toast from 'react-hot-toast';
+import Modal from '../components/Modal';
+import DestinationForm from '../components/admin/DestinationForm';
 
 export default function ManageDestinations() {
   const [destinations, setDestinations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedDestination, setSelectedDestination] = useState(null);
 
   useEffect(() => {
     fetchDestinations();
@@ -23,6 +27,16 @@ export default function ManageDestinations() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleAdd = () => {
+    setSelectedDestination(null);
+    setIsModalOpen(true);
+  };
+
+  const handleEdit = (dest) => {
+    setSelectedDestination(dest);
+    setIsModalOpen(true);
   };
 
   const handleDelete = async (id) => {
@@ -43,10 +57,28 @@ export default function ManageDestinations() {
           <h1 className="font-display font-bold text-3xl text-on-surface mb-2">Manage Destinations</h1>
           <p className="text-on-surface-variant">Add, edit, or remove places you offer.</p>
         </div>
-        <button className="btn-primary flex items-center gap-2 w-max">
+        <button 
+          onClick={handleAdd}
+          className="btn-primary flex items-center gap-2 w-max"
+        >
           <FiPlus /> Add Destination
         </button>
       </div>
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={selectedDestination ? 'Edit Destination' : 'Add New Destination'}
+      >
+        <DestinationForm
+          destination={selectedDestination}
+          onSuccess={() => {
+            setIsModalOpen(false);
+            fetchDestinations();
+          }}
+          onCancel={() => setIsModalOpen(false)}
+        />
+      </Modal>
 
       <div className="bg-surface-container-lowest rounded-xl border border-outline-variant/20 shadow-ambient overflow-hidden">
         <div className="overflow-x-auto">
@@ -86,7 +118,11 @@ export default function ManageDestinations() {
                     <td className="px-6 py-4 text-on-surface-variant">{dest.region}</td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-3">
-                        <button className="p-2 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded transition-colors" title="Edit">
+                        <button 
+                          onClick={() => handleEdit(dest)}
+                          className="p-2 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded transition-colors" 
+                          title="Edit"
+                        >
                           <FiEdit2 size={16} />
                         </button>
                         <button onClick={() => handleDelete(dest._id)} className="p-2 text-on-surface-variant hover:text-error hover:bg-error/10 rounded transition-colors" title="Delete">

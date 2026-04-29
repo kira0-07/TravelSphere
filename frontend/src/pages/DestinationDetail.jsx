@@ -8,6 +8,7 @@ import NotFound from './NotFound';
 import { destinationsAPI, packagesAPI, hotelsAPI } from '../services/api';
 import PackageCard from '../components/PackageCard';
 import HotelCard from '../components/HotelCard';
+import { destinations as mockDestinations, packages as mockPackages, hotels as mockHotels } from '../data/mockData';
 
 export default function DestinationDetail() {
   const { id } = useParams();
@@ -27,18 +28,24 @@ export default function DestinationDetail() {
           hotelsAPI.getByDestination(id)
         ]);
         
-        setDestination(destRes.data);
-        
-        // Ensure we filter safely in case backend doesn't filter perfectly
-        const pkgs = packagesRes.data.filter(p => p.destinationId === id).slice(0, 3);
-        setRelatedPackages(pkgs);
-        
-        const htls = hotelsRes.data.filter(h => h.destinationId === id).slice(0, 3);
-        setRelatedHotels(htls);
+        if (destRes.data) {
+          setDestination(destRes.data);
+          setRelatedPackages(packagesRes.data.filter(p => p.destinationId === id).slice(0, 3));
+          setRelatedHotels(hotelsRes.data.filter(h => h.destinationId === id).slice(0, 3));
+        } else {
+          throw new Error('No data from API');
+        }
         
       } catch (err) {
-        console.error('Failed to fetch destination data', err);
-        setError(true);
+        console.error('Failed to fetch destination data, using mock fallback', err);
+        const mockDest = mockDestinations.find(d => d.id === id);
+        if (mockDest) {
+          setDestination(mockDest);
+          setRelatedPackages(mockPackages.filter(p => p.destinationId === id).slice(0, 3));
+          setRelatedHotels(mockHotels.filter(h => h.destinationId === id).slice(0, 3));
+        } else {
+          setError(true);
+        }
       } finally {
         setLoading(false);
       }
