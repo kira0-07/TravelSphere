@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { FiCheck } from 'react-icons/fi';
+import { FiCheck, FiCheckCircle, FiX } from 'react-icons/fi';
 import StatusBadge from '../components/StatusBadge';
 import { adminAPI } from '../services/api';
 import toast from 'react-hot-toast';
@@ -90,16 +90,43 @@ export default function ManageBookings() {
                       <StatusBadge status={booking.status} />
                     </td>
                     <td className="px-6 py-4 text-right">
-                      {booking.status === 'pending' ? (
-                        <button
-                          onClick={() => handleUpdateBookingStatus(booking._id, 'confirmed')}
-                          className="inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-primary px-3 py-1.5 rounded hover:bg-primary-dark transition-colors"
-                        >
-                          <FiCheck /> Confirm
-                        </button>
-                      ) : (
-                        <span className="text-xs text-on-surface-variant italic">No actions</span>
-                      )}
+                      <div className="flex justify-end gap-2">
+                        {booking.status === 'pending' && (
+                          <>
+                            <button
+                              onClick={() => handleUpdateBookingStatus(booking._id, 'confirmed')}
+                              className="inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-primary px-3 py-1.5 rounded hover:bg-primary-dark transition-colors shadow-sm"
+                            >
+                              <FiCheck /> Confirm
+                            </button>
+                            <button
+                              onClick={() => handleUpdateBookingStatus(booking._id, 'cancelled')}
+                              className="inline-flex items-center gap-1.5 text-xs font-semibold text-on-error bg-error px-3 py-1.5 rounded hover:bg-error-dark transition-colors shadow-sm"
+                            >
+                              <FiX /> Cancel
+                            </button>
+                          </>
+                        )}
+                        {booking.status === 'confirmed' && (
+                          <>
+                            <button
+                              onClick={() => handleUpdateBookingStatus(booking._id, 'completed')}
+                              className="inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-green-600 px-3 py-1.5 rounded hover:bg-green-700 transition-colors shadow-sm"
+                            >
+                              <FiCheckCircle /> Complete
+                            </button>
+                            <button
+                              onClick={() => handleUpdateBookingStatus(booking._id, 'cancelled')}
+                              className="inline-flex items-center gap-1.5 text-xs font-semibold text-on-error bg-error px-3 py-1.5 rounded hover:bg-error-dark transition-colors shadow-sm"
+                            >
+                              <FiX /> Cancel
+                            </button>
+                          </>
+                        )}
+                        {(booking.status === 'completed' || booking.status === 'cancelled') && (
+                          <span className="text-xs text-on-surface-variant italic">No actions</span>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))
